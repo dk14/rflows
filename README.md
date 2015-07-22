@@ -50,22 +50,22 @@ splits (optionally) the message to several ones and sends each part to its (dyna
 route process a message and route the result to dynamically chosen flow (in reactive way)
 Same as `Split` but `route1` returns list of only one directive (with flow chosen based on input message) to process. It can be implemented with same Split construction:
 
-  Split("route1", router1)
+    Split("route1", router1)
 
-  def router1(in: Data[Request]) = if (in.isForSubFlow1)  Seq(Future(in.data) -> SubFlow1) else Seq(Future(in.data) -> SubFlow2)
+    def router1(in: Data[Request]) = if (in.isForSubFlow1)  Seq(Future(in.data) -> SubFlow1) else Seq(Future(in.data) -> SubFlow2)
 
 ##### FlowGroup and SubFlows
 groups several sub-flows to be used inside one `Split`
 
-  implicit object FlowGroup1 extends Group {
-    val SubFlow1 = Act("act3", handler3) |> Act("act4", handler4) tagged //do not forget "tagged" word !!
-    val SubFlow2 = Act("act5", handler5) tagged
-  }
+    implicit object FlowGroup1 extends Group {
+      val SubFlow1 = Act("act3", handler3) |> Act("act4", handler4) tagged //do not forget "tagged" word !!
+      val SubFlow2 = Act("act5", handler5) tagged
+    }
 
 ##### Aggregate
 aggregates messages
 
-  Aggregate("aggregate1", aggregator1)
+    Aggregate("aggregate1", aggregator1)
 
 #### Basic terms
 

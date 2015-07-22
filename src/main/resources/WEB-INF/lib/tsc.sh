@@ -1,0 +1,1 @@
+ tsc -w -t ES6 ts/headers/*.ts ts/*.ts --outDir js

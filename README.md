@@ -31,7 +31,7 @@ executes a processor and moving to next act (or returning result) in reactive wa
     
     Act("act1", handler1)
 
-`handler1` takes input message and returns future of output message, so next act in chain (act2) is executed only when future completes. In combination with scala's Futures compositionIt gives you a way ackuire asynchronous services and build processing in reactive way.
+`handler1` takes input message and returns future of output message, so next act in chain (act2) is executed only when future completes. In combination with scala's Futures composition, it gives you a way to acquire asynchronous services and build processing in reactive way.
 
 ##### Split
 splits (optionally) the message to several ones and sends each part to its (dynamically chosen) flow in reactive way. It's also possible to send same message to different flows.

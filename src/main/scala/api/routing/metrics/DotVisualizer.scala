@@ -7,6 +7,9 @@ import com.codahale._
 import com.codahale.metrics.MetricRegistry
 import com.typesafe.config.{ ConfigFactory, Config }
 
+import scala.concurrent.duration.Duration
+import scala.util.Try
+
 /**
   * Created by dkondratiuk on 6/12/15.
   */
@@ -117,8 +120,6 @@ trait MetricsReporter {
 
   def config: Config
 
-  lazy val period = config.getDuration("reporting.period", TimeUnit.SECONDS)
-
   import java.util.SortedMap
   import scala.collection.JavaConverters._
 
@@ -147,7 +148,9 @@ trait MetricsReporter {
 object DefaultMetricsReporter extends MetricsReporter {
   override implicit def metricRegistry: MetricRegistry = AppMetrics.metricRegistry
 
+  // $COVERAGE-OFF$
   override def config: Config = ConfigFactory.load()
+  // $COVERAGE-ON$
 
 }
 

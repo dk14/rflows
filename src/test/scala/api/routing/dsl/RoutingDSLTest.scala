@@ -1,6 +1,8 @@
 package api.routing.dsl
 
-import api.routing.metrics.DotVisualizer
+import java.util.concurrent.TimeUnit
+
+import api.routing.metrics.{DefaultMetricsAggregator, DefaultMetricsReporter, DotVisualizer}
 import org.scalatest._
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.time.{ Millis, Span }
@@ -11,7 +13,9 @@ import scala.util.Try
 
 case class Ctx(name: String)
 
-trait SampleRouter extends RoutingDSLImpl[Ctx] with DotVisualizer[Ctx] {
+trait SampleRouter extends InstrumentedRouting[Ctx] with DotVisualizer[Ctx] {
+
+  implicit def ec = scala.concurrent.ExecutionContext.Implicits.global
 
   val log = List.fill(11)(Promise[String])
 
@@ -33,13 +37,24 @@ trait SampleRouter extends RoutingDSLImpl[Ctx] with DotVisualizer[Ctx] {
     val Flow2 = Act("chunk22", process) tagged
   }
 
-  lazy val Flow = Act("map", process) |> Split("flatMap", split) |> Aggregate("reduce", aggregate) |> Act.simple("postMap", _.data) //flow itself
+  lazy val Flow = Act("map", process) |> Split.simple("flatMap", split) |> Aggregate.simple("reduce", aggregate) |> Act.simple("postMap", _.data) //flow itself
 
-  def process(a: Data[String]) = Future(a + "!") //enrich
+  def process(a: Data[String]) = a withMeta {implicit aa =>
+    a.fut.map(_ + "!") measure "service1" // same as `Future(a + "!") measure "service1"`
+  } //enrich from service1
 
-  def split(a: Data[String]) = Seq(Future(a.data) -> Grp.Flow1, Future(a.data) -> Grp.Flow2) //duplicate and send to Flow1 and Flow2
+  def split(a: Data[String]) = Seq(a.data -> Grp.Flow1, a.data -> Grp.Flow2) //duplicate and send to Flow1 and Flow2
 
-  def aggregate(aa: Data[Seq[String]]) = Future(aa.mkString) //merge
+  def aggregate(aa: Data[Seq[String]]) = aa.mkString //merge
+
+  Flow register
+
+  lazy val Flow2 = Act("map2", process) |> Split.route("route", route) |> Act.simple("postMap2", _.data) //flow itself
+
+  def route(a: Data[String]) = a.data -> Grp.Flow1
+
+  Flow2 register
+
 
 }
 
@@ -59,6 +74,21 @@ trait LoopRouter extends RoutingDSLImpl[Ctx] with DotVisualizer[Ctx] {
 
 }
 
+trait FailedRouter extends InstrumentedRouting[Ctx] with DotVisualizer[Ctx] {
+
+  case class Err() extends RuntimeException("Access denied!")
+
+  implicit def ec = scala.concurrent.ExecutionContext.Implicits.global
+
+  lazy val FailedFlow = Act.simple("failure", failure)
+
+  def failure(d: Data[String]) = throw Err()
+
+  lazy val FailedFlow2 = Act("failure2", failure2)
+
+  def failure2(d: Data[String]) = Future.failed(Err())
+}
+
 /**
   * Created by dkondratiuk on 6/3/15.
   */
@@ -72,11 +102,17 @@ class RoutingDSLTest extends FunSuite with Matchers with ScalaFutures {
 
   test("perform map -> flatMap -> [chunk1 -> chunk12, chunk2] -> reduce -> postMap") {
 
+    DefaultMetricsReporter.localReporter.start(1, TimeUnit.MILLISECONDS)
+
     impl.Flow.toString shouldBe ("map |> flatMap[chunk1 |> chunk12, chunk2] |> reduce |> postMap")
+
+    impl.Grp.Flow1.toString shouldBe impl.Grp.Flow1.f.toString
 
     val result = impl.Flow(Seq("a"), Ctx("name"))
 
-    //println(impl.getSimpleDotGraphF(impl.Flow, List(impl.Stat("flatMap", "SomeTime", "0ms"))))
+    impl.getSimpleDotGraphF(impl.Flow, List(impl.Stat("flatMap", "SomeTime", "0ms")))
+
+    DefaultMetricsAggregator.getGraph
 
     result.futureValue shouldEqual Seq("a!!!a!!")
 
@@ -97,6 +133,8 @@ class RoutingDSLTest extends FunSuite with Matchers with ScalaFutures {
       val rr = (0 to 1000).map(_ => impl.Flow.apply(Seq("a"), Ctx("name")).map(_.head))
       val r = Future.sequence(rr.toList).map(_.toSet)
 
+      impl.Flow2(Seq("a"), Ctx("name")).futureValue shouldEqual List("a!!!")
+
       r.futureValue shouldEqual Set("a!!!a!!")
 
     }
@@ -106,9 +144,21 @@ class RoutingDSLTest extends FunSuite with Matchers with ScalaFutures {
   test("perform some simple loop") {
     val looper = new LoopRouter {}
     val r = looper.Flow(Seq(5), Ctx("name"))
-    //println(looper.getSimpleDotGraphF(looper.Flow, List(looper.Stat("decAndSplit", "DecTime", "0ms"))))
+    looper.getSimpleDotGraphF(looper.Flow, List(looper.Stat("decAndSplit", "DecTime", "0ms")))
     r.futureValue shouldEqual Seq(0)
 
   }
+
+  test("check failure") {
+    val looser = new FailedRouter {}
+
+    val r = looser.FailedFlow(Seq("5"), Ctx("name"))
+    r.failed.futureValue shouldEqual FlowException("failure: Access denied!", looser.Err())
+
+    val r2 = looser.FailedFlow(Seq("5"), Ctx("name"))
+    r2.failed.futureValue shouldEqual FlowException("failure: Access denied!", looser.Err())
+
+  }
+
 
 }

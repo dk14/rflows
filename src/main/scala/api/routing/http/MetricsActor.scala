@@ -4,6 +4,8 @@ import akka.actor.{ Actor, ActorRefFactory, ActorSystem, Props }
 import api.routing.metrics.DefaultMetricsAggregator
 import spray.routing.HttpService
 
+// $COVERAGE-OFF$
+
 /**
   * Created by dkondratiuk on 6/18/15.
   */
@@ -19,6 +21,7 @@ class MetricsActor extends Actor with MetricRoutes with HttpService {
 
 trait MetricRoutes extends HttpService {
 
+
   lazy val Root = "graph"
 
   lazy val route = get {
@@ -31,7 +34,11 @@ trait MetricRoutes extends HttpService {
     }
   }
 
+
+
 }
+
+
 
 //Just extend it and bind in your spray-can boot
 trait MetricsBoot {
@@ -41,4 +48,8 @@ trait MetricsBoot {
   lazy val metricsService = system.actorOf(Props[MetricsActor])
   //IO(Http) ! Http.Bind(metricsService, interface, port)
 }
+
+// $COVERAGE-ON$
+
+
 

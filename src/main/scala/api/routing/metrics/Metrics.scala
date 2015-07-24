@@ -6,11 +6,14 @@ import com.typesafe.config._
 import nl.grons.metrics.scala._
 import scala.concurrent.ExecutionContext
 import scala.language.postfixOps
+import scala.util.Try
 
 /**
   * Created by dkondratiuk on 6/5/15.
   */
 object AppMetrics {
+
+  // $COVERAGE-OFF$
 
   implicit val metricRegistry = new com.codahale.metrics.MetricRegistry()
 
@@ -18,8 +21,9 @@ object AppMetrics {
 
   lazy val config = ConfigFactory.load()
 
-  lazy val poolSize = config.getInt("reporting.tags.size")
+  lazy val poolSize = Try(config.getInt("reporting.tags.size")) getOrElse 1000
 
+  // $COVERAGE-N$
 
 }
 
@@ -117,6 +121,13 @@ trait Instrumented extends InstrumentedBuilder {
     tagged(counter, name, (("bucket" -> (value / granularity).toInt.toString) +: additionalTags.toSeq): _*).inc()
 
   implicit class RichFuture[T](f: scala.concurrent.Future[T])(implicit fctx: ExecutionContext) { //TODO add metrics context
+    /**
+     * applies measurements to future returned by some service API
+     *
+     * @param tags - additional tags
+     * @param mctx - should contain info about current flow
+     * @return - measured future
+     */
     def measure(name: String, tags: (String, String)*)(implicit mctx: MetricsContext): scala.concurrent.Future[T] = {
       val ctx = tagged(timer, name, tags ++ Seq("flowName" -> mctx.step): _*).timerContext()
       f.map{ x => ctx.stop(); x }

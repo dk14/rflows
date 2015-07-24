@@ -15,7 +15,10 @@ trait ManagableFlows[Ctx] extends RoutingDSLBase[Ctx] {
 
   lazy val flowTimeout = Duration(10, TimeUnit.SECONDS)
 
+
+  // $COVERAGE-OFF$
   lazy val flowRetries = 1 //TODO implement
+  // $COVERAGE-ON$
 
   lazy val scheduler = Executors.newScheduledThreadPool(1)
 
@@ -44,6 +47,8 @@ trait ManagableFlowsConfig[C] extends ManagableFlows[C] {
   override lazy val flowTimeout = Duration(
     Try(config.getDuration("flow.timeout", TimeUnit.MILLISECONDS)).getOrElse(10000L), TimeUnit.MILLISECONDS)
 
+  // $COVERAGE-OFF$
   override lazy val flowRetries = Try(config.getInt("flow.retries")).getOrElse(1) //TODO implement
+  // $COVERAGE-ON$
 
 }

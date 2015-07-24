@@ -26,8 +26,6 @@ case class FlowException(msg: String, t: Throwable) extends Exception(msg, t)
 
 trait RoutingDSLBase[Ctx] {
 
-  def moduleName = "root"
-
   type Meta <: MetaBase
 
   trait MetaBase { def flow: Flow[Any, Any]; def ctx: Ctx }
@@ -41,11 +39,7 @@ trait RoutingDSLBase[Ctx] {
 
   implicit def toData[State](data: State)(implicit ctx: Ctx, meta: Meta): Data[State] = Data(data, ctx, meta)
 
-  implicit def toDataList[T](data: Seq[T])(implicit ctx: Ctx, meta: Meta): Seq[Data[T]] = data map (Data(_, ctx, meta))
-
   implicit def fromData[T](data: Data[T]) = data.data
-
-  implicit def fromDataF[In, Out](f: In => Out) = (in: Data[In]) => f(in.data)
 
   implicit def ec: ExecutionContext
 
@@ -82,12 +76,7 @@ trait RoutingDSLBase[Ctx] {
 
     def hasNormalName = (!this.isInstanceOf[Compose[_, _, _]] && !this.isInstanceOf[TaggedFlow[_, _, _]] && name.nonEmpty)
 
-    private[RoutingDSLBase] def tag[Tag <: FlowTag: WeakTypeTag] = {
-      implicit val tag = in.asInstanceOf[TypeTag[In]]
-      TaggedFlow[In, Out, Tag](this)
-    }
-
-    override def toString = name
+     override def toString = name
 
   }
 
@@ -149,7 +138,7 @@ trait RoutingDSLBase[Ctx] {
     def name(t: Throwable) = (if (f.hasNormalName) f.name + ": " else "") + t.getMessage
     before(f, in)
     Try(action)
-      .recover { case t: Throwable => Future.failed[Seq[Out]](FlowException(name(t), t)) }
+      .recover { case t: Throwable => Future.failed[Seq[Out]](t) }
       .get
       .recoverWith { case t: Throwable => failure(f, t); Future.failed(FlowException(name(t), t)) } map (after(f, _))
   }

@@ -1,3 +1,5 @@
+import CoverallsPlugin.CoverallsKeys._
+
 name := "rflows"
 
 version := "0.1-SNAPSHOT"
@@ -16,3 +18,5 @@ libraryDependencies += "com.typesafe.akka"            %% "akka-slf4j"           
 libraryDependencies += "nl.grons"                     %% "metrics-scala"            % "3.5.1_a2.3"
 libraryDependencies += "org.scala-lang"               %  "scala-reflect"            % scalaVersion.value
 libraryDependencies += "org.scalatest"                %  "scalatest_2.11"           % "3.0.0-M7" % "test"
+
+coverallsToken := "QkzIoJtqyx2rfphcKrL6q6gDFmTtie7M8"

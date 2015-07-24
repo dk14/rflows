@@ -1,4 +1,4 @@
-sonatypeProfileName := "org.rflows"
+sonatypeProfileName := "com.github.dk14.rflows"
 
 pomExtra in Global := {
   <url>github.com/dk14</url>

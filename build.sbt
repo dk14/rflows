@@ -1,4 +1,4 @@
-import CoverallsPlugin.CoverallsKeys._
+import org.scoverage.coveralls.Imports.CoverallsKeys._
 
 name := "rflows"
 
@@ -23,4 +23,5 @@ libraryDependencies += "nl.grons"                     %% "metrics-scala"        
 libraryDependencies += "org.scala-lang"               %  "scala-reflect"            % scalaVersion.value
 
 libraryDependencies += "org.scalatest"                %  "scalatest_2.11"           % "3.0.0-M7" % "test"
-coverallsToken := "QkzIoJtqyx2rfphcKrL6q6gDFmTtie7M8"
+
+coverallsToken := Some("QkzIoJtqyx2rfphcKrL6q6gDFmTtie7M8")

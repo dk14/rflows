@@ -2,8 +2,6 @@ import org.scoverage.coveralls.Imports.CoverallsKeys._
 
 name := "rflows"
 
-version := "0.1-SNAPSHOT"
-
 scalaVersion := "2.11.6"
 
 exportJars := true

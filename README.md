@@ -5,6 +5,7 @@
 
 This is embedded reactive and typesafe Scala-based DSL for declaring flows using functional composition.
 
+![Graph1](/graph.png)
 
 ####Flow
 sequentially executes several acts, splitters, aggregators or other flows

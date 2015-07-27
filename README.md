@@ -7,6 +7,13 @@ This is embedded reactive and typesafe Scala-based DSL for declaring flows using
 
 ![Graph1](/graph.png)
 
+To get started with SBT, simply add the following to your build.sbt file:
+
+```scala
+  resolvers += Resolver.sonatypeRepo("snapshots")
+  libraryDependencies += "com.github.dk14" %% "rflows" % "0.2-SNAPSHOT"
+```
+
 ####Flow
 sequentially executes several acts, splitters, aggregators or other flows
 

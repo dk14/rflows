@@ -10,6 +10,8 @@ resolvers += Resolver.sonatypeRepo("releases")
 
 javaOptions += "-Xmx32M"
 
+organization := "com.github.dk14"
+
 libraryDependencies += "io.spray"                     %% "spray-routing-shapeless2" % "1.3.2"
 
 libraryDependencies += "com.typesafe.akka"            %% "akka-actor"               % "2.3.6"

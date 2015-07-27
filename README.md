@@ -21,7 +21,7 @@ To create new application-level flow - just extend `InstrumentedRouting` trait a
 define flow as composition (`|>`) of acts, splitters and aggregators
 
 ##### Simple Act 
-just executes a processor
+just executes a simple processor
 
     Act.simple("act1", handler1)
 
@@ -35,7 +35,7 @@ executes a processor and moving to next act (or returning result) in reactive wa
 `handler1` takes input message and returns future of output message, so next act in chain (act2) is executed only when future completes. In combination with scala's Futures composition, it gives you a way to acquire asynchronous services and build processing in reactive way.
 
 ##### Split
-splits (optionally) the message to several ones and sends each part to its (dynamically chosen) flow in reactive way. It's also possible to send same message to different flows.
+splits (optionally) the message into several ones and sends each part to its own (dynamically chosen) flow in reactive way. You can also send same message to different flows.
 
     Split("split1", splitter1)
 
@@ -45,9 +45,9 @@ splits (optionally) the message to several ones and sends each part to its (dyna
  
     def splitter1(in: Data[Request]) = Seq(Future(in.part1) -> SubFlow1, Future(in.part2) -> SubFlow2) //example with splitting flow but not the message
 
-`splitter1` function takes message and returns list of directives, each directive is Future[Message] -> Flow, which means that it contains a new message (may be just a copy of input and flow to process this message.
+`splitter1` function takes message and returns list of directives, each directive is `Future[Message] -> Flow`, which means that it contains a new message (may be just a copy of input and flow to process this message.
 
->All flows (returned by splitter) should be part of same group (see below). For instance, SubFlow1 and SubFlow2 are parts of FlowGroup1 (see the diagram)
+>All flows (returned by splitter) should be part of same group (see below). For instance, `SubFlow1` and `SubFlow2` are parts of `FlowGroup1` (see the diagram)
 >Otherwise you get scary compilation error, which is intentional protection from SubFlow Hell'
 
 ##### Route

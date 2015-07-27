@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/dk14/rflows.svg)](https://travis-ci.org/dk14/rflows)
+[![codecov.io](http://codecov.io/github/dk14/rflows/coverage.svg?branch=master)](http://codecov.io/github/dk14/rflows?branch=master)
 
 # rflows
 

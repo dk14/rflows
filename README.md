@@ -1,5 +1,4 @@
 [![Build Status](https://travis-ci.org/dk14/rflows.svg)](https://travis-ci.org/dk14/rflows)
-[![Coverage Status](https://coveralls.io/repos/dk14/rflows/badge.svg?branch=master&service=github)](https://coveralls.io/github/dk14/rflows?branch=master)
 
 # rflows
 

@@ -22,6 +22,6 @@ libraryDependencies += "nl.grons"                     %% "metrics-scala"        
 
 libraryDependencies += "org.scala-lang"               %  "scala-reflect"            % scalaVersion.value
 
-libraryDependencies += "org.scalatest"                %  "scalatest_2.11"           % "3.0.0-M7" % "test"
+libraryDependencies += "org.scalatest"                %%  "scalatest"           % "3.0.0-M7" % "test"
 
 coverallsToken := Some("QkzIoJtqyx2rfphcKrL6q6gDFmTtie7M8")

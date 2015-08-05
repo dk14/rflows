@@ -141,4 +141,14 @@ trait Instrumented extends InstrumentedBuilder {
   def meter(name: String) = metrics.meter(name, "")
   def histogram(name: String) = metrics.histogram(name, "")
 
+  case class TagsExtractor[T](extract: T => Seq[(String, String)])
+
+  def time[T](name: String)(f: => T)(implicit extractor: TagsExtractor[T]): T = {
+    val clock = com.codahale.metrics.Clock.defaultClock()
+    val startTIme = clock.getTick()
+    val r = f
+    tagged(timer, name, extractor.extract(r): _*).update(clock.getTick - startTIme, TimeUnit.NANOSECONDS)
+    r
+  }
+
 }

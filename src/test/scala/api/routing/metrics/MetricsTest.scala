@@ -61,15 +61,20 @@ class MetricsTest extends FunSuite with Matchers with ScalaFutures {
   test("just usage examples") {
     import scala.concurrent.ExecutionContext.Implicits.global
     val instrInst = instr
-    import instrInst._
-    val somethingTime = tagged(timer, "metric", "name" -> "value")
+    import instrInst._ // in your application, just extend `Instrumented` instead of that
 
-    implicit val m = MetricContextImpl("test")
+
+    //---------------Example1----------------
+
+    //example of simple timer, it measures time of doSomething and sends it to yammer-metrics (to be picked up by reporters later)
+    val somethingTime = tagged(timer, "metric", "name" -> "value")
 
     somethingTime time {
       doSomething
     }
 
+
+    //---------------Example2----------------
     val ctx = somethingTime.timerContext()
 
     Future {
@@ -77,15 +82,36 @@ class MetricsTest extends FunSuite with Matchers with ScalaFutures {
       ctx.stop()
     }
 
-    //or just
+    //or just:
 
-    Future {
+    //---------------Example3----------------
+
+    implicit val m = MetricContextImpl("test") //this is needed for Future.measure syntax
+
+    val myFuture = Future {
       doSomething
-    } measure "metric"
+    } measure "metric" //measure is ad-hoc method of the Future, which takes name (and optionally tags) and returns same Future
+
+    val myFuture2 = Future { //just another example, which shows how to use tags
+      doSomething
+    } measure ("metric", "tag1" -> "value1", "tag2" -> "value2") //tag3 -> value3 etc...
+
+
+    //---------------Example4----------------
 
     val hitsCount = tagged(counter, "hits", "cache" -> "city")
 
     hitsCount.inc()
+
+    //---------------Example5----------------
+
+    implicit val extr = TagsExtractor[String](r => Seq("firstLetter" -> r.head.toString)) //this gonna add firstLetter tag with value "r" (see "result" below)
+
+    val result = time("measurement") { //this is one of measurements, that is affected by extractor
+      doSomething
+      "result"
+    }
+
 
   }
 

@@ -26,7 +26,9 @@ trait MetricRoutes extends HttpService {
 
   lazy val route = get {
     path(Root / "data") {
-      complete(DefaultMetricsAggregator.getGraph)
+      parameters('st) { st =>
+        complete(DefaultMetricsAggregator.getGraph(st))
+      }
     } ~ path(Root / "ui") {
       getFromResource("WEB-INF/index.html")
     } ~ pathPrefix(Root / "ui") {

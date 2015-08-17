@@ -112,7 +112,7 @@ class RoutingDSLTest extends FunSuite with Matchers with ScalaFutures {
 
     impl.getSimpleDotGraphF(impl.Flow, List(impl.Stat("flatMap", "SomeTime", "0ms")))
 
-    DefaultMetricsAggregator.getGraph
+    DefaultMetricsAggregator.getGraph("99th")
 
     result.futureValue shouldEqual Seq("a!!!a!!")
 

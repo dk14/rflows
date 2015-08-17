@@ -84,10 +84,9 @@ trait MetricsAggregator {
 
   type ActName = String
   type PropertyName = String
+  type StatName = String
 
-  type MetricsMap = Map[(ActName, PropertyName), Double]
-
-  private var _metrics = Map.empty[(ActName, PropertyName), Double]
+  private var _metrics = Map.empty[(StatName, ActName, PropertyName), Double]
 
   private var _edges = Set.empty[(ActName, ActName)]
 
@@ -95,8 +94,8 @@ trait MetricsAggregator {
 
   protected def edges = _edges
 
-  def put(an: ActName, propertyName: PropertyName, value: Double): Unit = if ((edges.map(_._1) ++ edges.map(_._2)).contains(an)) {
-    _metrics += (an -> propertyName) -> value
+  def put(sn: StatName, an: ActName, propertyName: PropertyName, value: Double): Unit = if ((edges.map(_._1) ++ edges.map(_._2)).contains(an)) {
+    _metrics += (sn, an, propertyName) -> value
   }
 
   def register(edges: List[(ActName, ActName)]) = {
@@ -109,10 +108,10 @@ trait MetricsReporter {
 
   def aggregator: MetricsAggregator = DefaultMetricsAggregator
 
-  def reportLocal(name: String, value: Double) = {
+  def reportLocal(sn: String, name: String, value: Double) = {
     val nm = TaggedName.fromRaw(name)
     for (flowName <- nm.tags.get("flowName")) {
-      aggregator.put(flowName, nm.name, value / 1000000)
+      aggregator.put(sn, flowName, nm.name, value / 1000000)
     }
   }
 
@@ -138,7 +137,16 @@ trait MetricsReporter {
 
       timers.asScala.foreach {
         case (name, timer) =>
-          reportLocal(name, timer.getSnapshot.get99thPercentile())
+
+          reportLocal("99th", name, timer.getSnapshot.get99thPercentile)
+          reportLocal("98th", name, timer.getSnapshot.get98thPercentile)
+          reportLocal("95th", name, timer.getSnapshot.get95thPercentile)
+          reportLocal("75th", name, timer.getSnapshot.get75thPercentile)
+          reportLocal("999th", name, timer.getSnapshot.get999thPercentile)
+          reportLocal("Max", name, timer.getSnapshot.getMax)
+          reportLocal("Min", name, timer.getSnapshot.getMin)
+          reportLocal("Mean", name, timer.getSnapshot.getMean)
+          reportLocal("Median", name, timer.getSnapshot.getMedian)
       }
     }
   }
@@ -156,7 +164,7 @@ object DefaultMetricsReporter extends MetricsReporter {
 
 trait MetricsDotVisualizer extends MetricsAggregator with SimpleDotVisualizer {
 
-  def getGraph: String = getSimpleDotGraph(edges.toList, metrics.map{ case (k, v) => Stat(k._1, k._2, v.toString + " ms") }.toList)
+  def getGraph(sn: String): String = getSimpleDotGraph(edges.toList, metrics.filterKeys(_._1 == sn).map{ case (k, v) => Stat(k._1, k._2, v.toString + " ms") }.toList)
 
 }
 

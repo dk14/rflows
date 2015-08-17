@@ -1,5 +1,6 @@
 [![Build Status](https://travis-ci.org/dk14/rflows.svg)](https://travis-ci.org/dk14/rflows)
 [![codecov.io](http://codecov.io/github/dk14/rflows/coverage.svg?branch=master)](http://codecov.io/github/dk14/rflows?branch=master)
+[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/dk14/rflows?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
 # rflows
 

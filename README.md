@@ -55,8 +55,9 @@ splits (optionally) the message into several ones and sends each part to its own
 
 `splitter1` function takes message and returns list of directives, each directive is `Future[Message] -> Flow`, which means that it contains a new message (may be just a copy of input and flow to process this message.
 
->All flows (returned by splitter) should be part of same group (see below). For instance, `SubFlow1` and `SubFlow2` are parts of `FlowGroup1` (see the diagram)
->Otherwise you get scary compilation error, which is intentional protection from SubFlow Hell'
+>All flows (returned by splitter) should be part of same group (see below). For instance, `SubFlow1` and `SubFlow2` are parts of `FlowGroup1` (see the diagram).
+
+>Otherwise, you get scary compilation error, which is intentional protection from SubFlow Hell
 
 ##### Route
 route process a message and route the result to dynamically chosen flow (in reactive way)

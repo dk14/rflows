@@ -1,5 +1,3 @@
-import org.scoverage.coveralls.Imports.CoverallsKeys._
-
 name := "rflows"
 
 scalaVersion := "2.11.6"
@@ -22,6 +20,7 @@ libraryDependencies += "nl.grons"                     %% "metrics-scala"        
 
 libraryDependencies += "org.scala-lang"               %  "scala-reflect"            % scalaVersion.value
 
-libraryDependencies += "org.scalatest"                %%  "scalatest"           % "3.0.0-M7" % "test"
+libraryDependencies += "org.scalatest"                %% "scalatest"                % "3.0.0-M7" % "test"
 
-coverallsToken := Some("QkzIoJtqyx2rfphcKrL6q6gDFmTtie7M8")
+libraryDependencies += "com.lihaoyi"                  %% "utest"                    % "0.3.1"
+

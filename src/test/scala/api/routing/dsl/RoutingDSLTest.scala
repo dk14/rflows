@@ -160,5 +160,37 @@ class RoutingDSLTest extends FunSuite with Matchers with ScalaFutures {
 
   }
 
+  import utest._
+
+  test("compile-time check") {
+
+    val err = compileError {
+      """
+        trait SampleRouter extends InstrumentedRouting[Ctx] with DotVisualizer[Ctx] {
+
+          implicit def ec = scala.concurrent.ExecutionContext.Implicits.global
+
+          implicit object Grp1 extends Group {
+            val Flow1 = Act.simple("chunk1", process) tagged
+          }
+
+          implicit object Grp2 extends Group {
+            val Flow2 = Act.simple("chunk2", process) tagged
+          }
+
+          lazy val Flow = Split.simple("flatMap", split)
+
+          def split(a: Data[String]) = Seq(a.data -> Grp1.Flow1, a.data -> Grp2.Flow2)
+
+          def process(a: Data[String]) = a.data
+
+        }
+      """
+    }
+
+    err.msg should include ("is not compatible")
+
+  }
+
 
 }

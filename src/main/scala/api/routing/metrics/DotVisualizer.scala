@@ -36,7 +36,7 @@ trait DotVisualizer[Ctx] extends RoutingDSLBase[Ctx] with SimpleDotVisualizer {
   private def visualizeSplitAggregate(
     in: Split[Any, Any, Any, Group#Tag, Group],
     between: List[Flow[Any, Any]],
-    out: Aggregate[Any, Any]): List[(String, String)] = in.grp flatMap { l =>
+    out: Aggregate[Any, Any]): List[(String, String)] = in.g.registry flatMap { l =>
 
     val decomposed = deCompose(l)
     in.name -> decomposed.head.name :: getEdges(l, Some(in.name)) ::: List(decomposed.last.name -> out.name)

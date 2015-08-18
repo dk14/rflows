@@ -75,7 +75,7 @@ groups several sub-flows to be used inside one `Split`
     }
 
 ##### Aggregate
-aggregates messages
+aggregates messages after being split
 
     Aggregate("aggregate1", aggregator1)
 

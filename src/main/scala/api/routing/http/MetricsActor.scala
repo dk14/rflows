@@ -2,6 +2,9 @@ package api.routing.http
 
 import akka.actor.{ Actor, ActorRefFactory, ActorSystem, Props }
 import api.routing.metrics.DefaultMetricsAggregator
+import spray.http.StatusCode
+import spray.httpx.SprayJsonSupport
+import spray.httpx.marshalling.ToResponseMarshaller
 import spray.routing.HttpService
 
 // $COVERAGE-OFF$
@@ -19,8 +22,9 @@ class MetricsActor extends Actor with MetricRoutes with HttpService {
 
 }
 
-trait MetricRoutes extends HttpService {
-
+trait MetricRoutes extends HttpService with SprayJsonSupport {
+  import spray.json._
+  import DefaultJsonProtocol._
 
   lazy val Root = "graph"
 
@@ -29,6 +33,10 @@ trait MetricRoutes extends HttpService {
       parameters('st) { st =>
         complete(DefaultMetricsAggregator.getGraph(st))
       }
+    } ~ path(Root / "edges") {
+      complete(DefaultMetricsAggregator.edges)
+    } ~ path(Root / "metrics") {
+      complete(DefaultMetricsAggregator.metricNames.toList)
     } ~ path(Root / "ui") {
       getFromResource("WEB-INF/index.html")
     } ~ pathPrefix(Root / "ui") {

@@ -133,4 +133,12 @@ class MetricsTest extends FunSuite with Matchers with ScalaFutures {
     tn.tags shouldBe (tags)
   }
 
+  test("metrics aggregation") {
+    DefaultMetricsAggregator.edges
+    DefaultMetricsAggregator.metricNames
+    true shouldBe true // :-)
+    false shouldBe false
+
+  }
+
 }

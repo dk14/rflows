@@ -47,7 +47,7 @@ executes a processor and moving to next act (or returning result) in reactive wa
 `handler1` takes input message and returns future of output message, so next act in chain (act2) is executed only when future completes. In combination with scala's Futures composition, it gives you a way to acquire asynchronous services and build processing in reactive way.
 
 ##### FlowGroup and SubFlows
-groups several sub-flows to be used inside one `Split` (sse below)
+groups several sub-flows to be used inside one `Split` (see below)
 
     implicit object FlowGroup1 extends Group {
       val SubFlow1 = Act("act3", handler3) |> Act("act4", handler4) tagged //do not forget "tagged" word !!

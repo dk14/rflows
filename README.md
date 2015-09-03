@@ -148,3 +148,9 @@ TODO: Big Flow Decomposition
 TODO: "how to write handler" examples
 
 TODO: how to register before, after, failure handlers
+
+#### PS
+
+Inspired by "Intelligent Trade Capturing" (DeutscheBank iTrac) projects. Thanks to [Alexander Nemish](github.com/nau), Ilya Tkachuk, Vitalij Kotlyarenko for ideas.
+
+This library is used by [Agoda Inc](agoda.com) ([Priceline Group](http://www.pricelinegroup.com/) at the moment.

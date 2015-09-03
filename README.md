@@ -151,6 +151,6 @@ TODO: how to register before, after, failure handlers
 
 #### PS
 
-Inspired by "Intelligent Trade Capturing" (DeutscheBank iTrac) projects. Thanks to [Alexander Nemish](github.com/nau), Ilya Tkachuk, Vitalij Kotlyarenko for ideas.
+Inspired by Camel, Akka, iTrac projects. Thanks to [Alexander Nemish](http://github.com/nau), Ilya Tkachuk, Vitalij Kotlyarenko for ideas.
 
-This library is used by [Priceline](http://www.pricelinegroup.com/)[Agoda.com](agoda.com) at the moment.
+This library is used by [Priceline](http://www.pricelinegroup.com/)/[Agoda.com](http://agoda.com) at the moment.

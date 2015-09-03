@@ -15,6 +15,10 @@ To get started with SBT, simply add the following to your build.sbt file:
   libraryDependencies += "com.github.dk14" %% "rflows" % "0.2-SNAPSHOT"
 ```
 
+Usage examples (tests):
+  - [routing](/src/test/scala/api/routing/dsl/RoutingDSLTest.scala) - `SampleRouter` - defines several flows and several groups as well, there is also `before` intercptor (`after` and `log` defined as well) that executes before each step (act). You can also look at [`ManagableFlows`](/src/main/scala/api/routing/dsl/ManagableRouting.scala) trait if you need automatical timouts for flows - it will work only for `Future`-based implementation not for "simple" ones (`Act.simple` and so on)
+  - [metrics](/src/test/scala/api/routing/metrics/MetricsTest.scala#L61) - shows how to measure time, spent for each service. The time spent for a step itself is measured automatically. All such measurements are tagged with "flowName" tag, which contains the name of current step in context of which service was executed, so you need implicitly pass `MetricsContext` for that. You can get it from message iteslf (see `withMeta` in routing examples).
+
 ####Flow
 sequentially executes several acts, splitters, aggregators or other flows
 
@@ -40,11 +44,11 @@ just executes a simple processor
 `handler1` takes input message and returns output message
 
 ##### Act
-executes a processor and moving to next act (or returning result) in reactive way
+executes a processor and moves to next act or returnes a result using `Future`
     
     Act("act1", handler1)
 
-`handler1` takes input message and returns future of output message, so next act in chain (act2) is executed only when future completes. In combination with scala's Futures composition, it gives you a way to acquire asynchronous services and build processing in reactive way.
+`handler1` takes input message and returns a future of output message, so next act in chain (act2) is executed only when future completes. In combination with scala's `Future` composition, it gives you a way to acquire asynchronous services and build processing in reactive way.
 
 ##### FlowGroup and SubFlows
 groups several sub-flows to be used inside one `Split` (see below)
@@ -54,6 +58,7 @@ groups several sub-flows to be used inside one `Split` (see below)
       val SubFlow2 = Act("act5", handler5) tagged
     }
 
+You can't mix flows from different groups inside one splitting/routing handler - there is special compiler check to prevent that. Please, don't forget `tagged` and `implicit object` - otherwise your splitter won't compile. You can have several groups (`implicit object`'s ) in on scope
 
 ##### Split
 allows to split a message into several ones and send each part to its own (dynamically chosen) flow in reactive way. You can also send same message to different flows.
@@ -61,15 +66,15 @@ allows to split a message into several ones and send each part to its own (dynam
     Split("split1", splitter1)
 
     def splitter1(in: Data[Request]) = Seq( //same message, different flows
-        Future(in) -> SubFlow1, 
-        Future(in) -> SubFlow2
+      Future(in) -> SubFlow1, 
+      Future(in) -> SubFlow2
     )
  
     //or
  
     def splitter1(in: Data[Request]) = Seq( //different messages, different flows
-        Future(in.part1) -> SubFlow1,
-        Future(in.part2) -> SubFlow2
+      Future(in.part1) -> SubFlow1,
+      Future(in.part2) -> SubFlow2
     ) 
     
     //or just
@@ -77,8 +82,8 @@ allows to split a message into several ones and send each part to its own (dynam
     Split("split1", simpleSplitter)
     
     def simpleSplitter(in: Data[Request]) = Seq(
-        in.part1 -> SubFlow1,
-        in.part2 -> SubFlow2
+      in.part1 -> SubFlow1,
+      in.part2 -> SubFlow2
     )
     
 
@@ -90,19 +95,19 @@ allows to split a message into several ones and send each part to its own (dynam
 
 ##### Route
 route process a message and route a result to dynamically chosen flow (in reactive way)
-Same as `Split` but `route1` returns list of only one directive (with flow chosen based on input message) to process. It can be implemented with same Split construction:
+Simmilar to `Split` (it's particular case actually) but `route1` returns list with only one directive (message+destination) to process. It can be implemented with same Split construction:
 
     Split("route1", router1)
 
     def router1(in: Data[Request]) = 
-       if (in.isForSubFlow1)  
-          Seq(Future(in.data) -> SubFlow1) else Seq(Future(in.data) -> SubFlow2)
+      if (in.isForSubFlow1)  
+        Seq(Future(in.data) -> SubFlow1) else Seq(Future(in.data) -> SubFlow2)
     
     //or just
     
     Split.route("route", router) = //note that this one doesn't need aggregation
       if (in.isForSubFlow1)  
-          in.data -> SubFlow1 else in.data -> SubFlow2
+        in.data -> SubFlow1 else in.data -> SubFlow2
 
 
 ##### Aggregate
@@ -134,16 +139,12 @@ Usually the context is current request, so just `Flow(incomingMessage, incomingM
 
 #####Meta
 
-Meta - is meta-information which contains current executing flow itself (including name), so you can propagate it to handler, services etc. Used for metrics and logging to define the concrete flow (act, splitter or aggregator) where some measured/logged event is actually takes place.
+Meta - is meta-information which contains current executing flow itself (including name), so you can propagate it to handler, services etc. Used for metrics and logging to define a concrete flow (act, splitter or aggregator) where some measured/logged event is actually takes place.
 
 ####See also
-
-See `RoutingDSLTest.scala` for complete working example 
 
 TODO: Big Flow Decomposition
 
 TODO: "how to write handler" examples
-
-TODO: Flow and Routing terms
 
 TODO: how to register before, after, failure handlers

@@ -19,10 +19,10 @@ Usage examples (tests):
   - [routing](/src/test/scala/api/routing/dsl/RoutingDSLTest.scala) - `SampleRouter` - defines several flows and several groups as well, there is also `before` intercptor (`after` and `log` defined as well) that executes before each step (act). You can also look at [`ManagableFlows`](/src/main/scala/api/routing/dsl/ManagableRouting.scala) trait if you need automatical timouts for flows - it will work only for `Future`-based implementation not for "simple" ones (`Act.simple` and so on)
   - [metrics](/src/test/scala/api/routing/metrics/MetricsTest.scala#L61) - shows how to measure time, spent for each service. The time spent for a step itself is measured automatically. All such measurements are tagged with "flowName" tag, which contains the name of current step in context of which service was executed, so you need implicitly pass `MetricsContext` for that. You can get it from message iteslf (see `withMeta` in routing examples).
 
-####Flow
+#### Flow
 sequentially executes several acts, splitters, aggregators or other flows
 
-Define routing (like `Routing1`)
+#### Routing
  
 To create new application-level flow - just extend `InstrumentedRouting` trait and define your flow inside:
 
@@ -31,10 +31,10 @@ To create new application-level flow - just extend `InstrumentedRouting` trait a
         Split("split1", splitter1) |> Aggregate("aggregate1", aggregate) |> Act("act6", handler6)
     }
 
-define flow as composition (`|>`) of acts, splitters and aggregators
-
 `handlerN` - handler for current flow step
 `MyServiceN` - service-layer used by handlers. It's recommended to inject those services in mix-in style.
+
+So here you can define flow as composition (`|>`) of acts, splitters and aggregators
 
 ##### Simple Act 
 just executes a simple processor

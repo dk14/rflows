@@ -120,7 +120,7 @@ Shoud be placed right after corresponding `Split`
 ##### How to run a flow
 it's just a function
 
-  Flow1(Seq(incomingMessage1), context)
+    Flow1(Seq(incomingMessage1), context)
   
 If you specify several incoming messages, they're going to be processed in parallel (it's like a resuming after `Split`). Usually you don't need that.
 
@@ -151,4 +151,4 @@ TODO: how to register before, after, failure handlers
 
 #### PS
 
-Inspired by Camel, Akka, iTrac projects. Thanks to [Alexander Nemish](http://github.com/nau), Ilya Tkachuk, Vitalij Kotlyarenko for ideas.
+Inspired by Camel, Akka projects. Thanks to [Alexander Nemish](http://github.com/nau), Ilya Tkachuk, Vitalij Kotlyarenko for some of ideas.

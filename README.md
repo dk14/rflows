@@ -26,6 +26,7 @@ sequentially executes several acts, splitters, aggregators or other flows
  
 To create new application-level flow - just extend `InstrumentedRouting` trait and define your flow inside:
 
+    import api.routing.dsl._
     trait Routing1 extends InstrumentedRouting[Request] with MyService1 with MyService2 {
       val Flow1 = Act("act1", handler1) |> Act("act2", handler2) |> 
         Split("split1", splitter1) |> Aggregate("aggregate1", aggregate) |> Act("act6", handler6)
@@ -123,6 +124,25 @@ it's just a function
     Flow1(Seq(incomingMessage1), context)
   
 If you specify several incoming messages, they're going to be processed in parallel (it's like a resuming after `Split`). Usually you don't need that.
+
+##### How to run dot-based graph and metrics visualiser:
+
+Register special reporter for yammer metrics:
+
+    import java.util.concurrent.TimeUnit
+    import api.routing.metrics._
+    
+    DefaultMetricsReporter.localReporter.start(1, TimeUnit.SECONDS)
+    
+Add visualization actor into your spray-can `Boot` using `MetricsBoot` trait :
+
+    import api.routing.http._ 
+    
+    object Boot extends App with MetricsBoot {
+       implicit val system = ActorSystem("spray-sample-system")
+       IO(Http) ! Http.Bind(metricsService, "localhost", 8080)
+    }
+
 
 #### Basic terms
 

@@ -70,16 +70,16 @@ allows to split a message into several ones and send each part to its own (dynam
       Future(in) -> SubFlow2
     )
  
-    //or
+or
  
     def splitter1(in: Data[Request]) = Seq( //different messages, different flows
       Future(in.part1) -> SubFlow1,
       Future(in.part2) -> SubFlow2
     ) 
     
-    //or just
+or just
     
-    Split("split1", simpleSplitter)
+    Split.simple("split1", simpleSplitter)
     
     def simpleSplitter(in: Data[Request]) = Seq(
       in.part1 -> SubFlow1,

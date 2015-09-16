@@ -16,7 +16,7 @@ To get started with SBT, simply add the following to your build.sbt file:
 ```
 
 Usage examples (tests):
-  - [routing](/src/test/scala/api/routing/dsl/RoutingDSLTest.scala) - `SampleRouter` - defines several flows and several groups as well, there is also `before` intercptor (`after` and `log` defined as well) that executes before each step (act). You can also look at [`ManagableFlows`](/src/main/scala/api/routing/dsl/ManagableRouting.scala) trait if you need automatical timouts for flows - it will work only for `Future`-based implementation not for "simple" ones (`Act.simple` and so on). See [RoutingDSL](/src/main/scala/api/routing/dsl/RoutingDSL.scala) for sources.
+  - [routing](/src/test/scala/api/routing/dsl/RoutingDSLTest.scala) - `SampleRouter` - defines several flows and several groups as well. Тhere is also а `before` intercеptor (`after` and `log` defined as well) that executes before each step (act). You can also look at [`ManagableFlows`](/src/main/scala/api/routing/dsl/ManagableRouting.scala) trait if you need automatical timеouts for flows - it will work only for `Future`-based implementation not for "simple" ones (`Act.simple` and so on). See [RoutingDSL](/src/main/scala/api/routing/dsl/RoutingDSL.scala) for sources.
   - [metrics](/src/test/scala/api/routing/metrics/MetricsTest.scala#L61) - shows how to measure time, spent for each service. The time spent for a step itself is measured automatically. All such measurements are tagged with "flowName" tag, which contains the name of current step in context of which service was executed, so you need implicitly pass `MetricsContext` for that. You can get it from message iteslf (see `withMeta` in routing examples).
 
 #### Flow
@@ -151,4 +151,4 @@ TODO: how to register before, after, failure handlers
 
 #### PS
 
-Inspired by Camel, Akka projects. Thanks to [Alexander Nemish](http://github.com/nau), Ilya Tkachuk, Vitalij Kotlyarenko for some of ideas.
+Inspired by Camel, Akka projects. Thanks to [Alexander Nemish](http://github.com/nau), [Ilya Tkachuk](https://github.com/jctim), Vitalij Kotlyarenko for some of ideas.

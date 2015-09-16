@@ -81,6 +81,27 @@ trait RoutingDSLBase[Ctx] {
 
   trait BasicFlow //just a marker
   trait AuxiliaryFlow //just a marker
+  
+  /**
+   * Flow1:
+   *                          SubFlow1
+   *                    /-- Act2 --> Act3 -->\
+   *   Act1 --> Split -<                      >--> Aggregate --> Act5
+   *                    \-- Act4 ----------->/
+   *                          SubFlow2
+   * 
+   * {@code
+   * 
+   *   implicit object Group1 extends Grp {
+   *       val SubFlow1 = Act("Act2", h2) |> Act("Act3", h3) tagged
+   *       val SubFlow2 = Act("Act4", h4) tagged
+   *   }
+   *  
+   *   val Flow1 = Act("Act1", h1) |> Split("Split", sh1) |> Aggregate("Split", ah1) |> Act("Act5", a5)
+   * 
+   * } 
+   * 
+   */
 
   case class Act[-In: TT, +Out: TT](name: String, handler: Data[In] => Future[Out]) extends Flow[In, Out] with BasicFlow
 

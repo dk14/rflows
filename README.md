@@ -59,7 +59,7 @@ groups several sub-flows to be used inside one `Split` (see below)
       val SubFlow2 = Act("act5", handler5) tagged
     }
 
-You can't mix flows from different groups inside one splitting/routing handler - there is special compiler check to prevent that. Please, don't forget `tagged` and `implicit object` - otherwise your splitter won't compile. You can have several groups (`implicit object`'s ) in on scope
+You can't mix flows from different groups inside one splitting/routing handler - there is special compiler check to prevent that. Please, don't forget `tagged` and `implicit object` - otherwise your splitter won't compile. You can have several groups (`implicit object`'s ) in one scope
 
 ##### Split
 allows to split a message into several ones and send each part to its own (dynamically chosen) flow in reactive way. You can also send same message to different flows.

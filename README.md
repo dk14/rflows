@@ -90,7 +90,7 @@ or just
 
 `splitter1` function takes message and returns list of directives, each directive is `Future[Message] -> Flow`, which means that it contains a new message (might be just a copy of input) and flow to process this message.
 
->All flows (returned by splitter) should be part of same group (see below). For instance, `SubFlow1` and `SubFlow2` are parts of `FlowGroup1` (see the diagram).
+>All flows (returned by splitter) should be part of same group (see above). For instance, `SubFlow1` and `SubFlow2` are parts of `FlowGroup1` (see the diagram).
 
 >Otherwise, you get scary compilation error, which is intentional protection from SubFlow Hell
 

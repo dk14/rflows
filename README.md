@@ -33,6 +33,7 @@ To create new application-level flow - just extend `InstrumentedRouting` trait a
     }
 
 `handlerN` - handler for current flow step
+
 `MyServiceN` - service-layer used by handlers. It's recommended to inject those services in mix-in style.
 
 So here you can define flow as composition (`|>`) of acts, splitters and aggregators
@@ -45,7 +46,7 @@ just executes a simple processor
 `handler1` takes input message and returns output message
 
 ##### Act
-executes a processor and moves to next act or returnes a result using `Future`
+executes a processor and moves to next act or returns a result using `Future`
     
     Act("act1", handler1)
 

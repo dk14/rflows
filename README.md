@@ -145,7 +145,7 @@ Add visualization actor into your spray-can `Boot` using `MetricsBoot` trait :
     }
 
 
-#### Basic terms
+#### Terminology
 
 
 #####Data

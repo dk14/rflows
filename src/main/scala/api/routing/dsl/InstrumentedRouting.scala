@@ -29,7 +29,7 @@ trait InstrumentedRouting[Ctx] extends RoutingDSLBase[Ctx] with Instrumented wit
     if (!f.hasNormalName) {
       val tmCtx = tagged(timer, "flow", Seq("flowName" -> f.name) ++ extractTags(in, ctx).toSeq: _*) timerContext ()
       super.log(f, in)(action)
-        .map(x => { tmCtx.stop(); x })
+        .map{x => tmCtx.stop(); x }
         .recoverWith { case t: Throwable => tmCtx.stop(); Future.failed(t) }
     }
     else {

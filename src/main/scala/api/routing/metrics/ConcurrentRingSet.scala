@@ -25,7 +25,7 @@ final class ConcurrentRingSet[K](val maxSize: Int)(val onRemove: K => Unit) exte
     if (count.get() == Long.MaxValue + 1) { set.clear(); count.set(0) } //Just in case...
     // $COVERAGE-ON$
     val index = count.incrementAndGet()
-    while (set.size >= maxSize) onRemove(set.pollFirst().key)
+    while (set.size >= maxSize) Option(set.pollFirst()).map(_.key).foreach(onRemove(_))
     set.add(PositionedKey(index, k))
   }
   else false

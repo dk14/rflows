@@ -148,21 +148,21 @@ Add visualization actor into your spray-can `Boot` using `MetricsBoot` trait :
 #### Terminology
 
 
-#####Data
+##### Data
 
 Data is a wrapper around message. It contains the message itself, and also its Context and Meta-info
 
-#####Context
+##### Context
 
-Context is an object shared between all Flows(like Flow1). inside one Routing (like Routing1).
-You can specify its type when extending InstrumentedRouting trait (see below) and specify an object itself when passing incoming message to a flow, like `Flow(incomingMessage, context)`
+Context is an object shared between all Flows(like `Flow1`) that belong to a single Routing (like `Routing1`).
+You can specify its type when extending `InstrumentedRouting` trait (see below) and specify an object itself when passing incoming message to a flow, like `Flow(incomingMessage, context)`
 Usually the context is current request, so just `Flow(incomingMessage, incomingMessage)`
 
-#####Meta
+##### Meta
 
 Meta - is meta-information which contains current executing flow itself (including name), so you can propagate it to handler, services etc. Used for metrics and logging to define a concrete flow (act, splitter or aggregator) where some measured/logged event is actually takes place.
 
-####See also
+#### See also
 
 TODO: Big Flow Decomposition
 

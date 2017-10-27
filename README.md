@@ -16,7 +16,7 @@ To get started with SBT, simply add the following to your build.sbt file:
 ```
 
 Usage examples (tests):
-  - [routing](/src/test/scala/api/routing/dsl/RoutingDSLTest.scala) - `SampleRouter` - defines flows and groups. Тhere is also а `before` intercеptor (`after` and `log` defined as well) that executes before each step (act). You may have a look at [`ManagableFlows`](/src/main/scala/api/routing/dsl/ManagableRouting.scala) trait if you need automatical timеouts for flows - it will work only for `Future`-based implementation not for "simple" ones (`Act.simple` and so on). See [RoutingDSL](/src/main/scala/api/routing/dsl/RoutingDSL.scala) for sources.
+  - [routing](/src/test/scala/api/routing/dsl/RoutingDSLTest.scala) - `SimpleRouter` - defines flows and groups. Тhere is also а `before` intercеptor (`after` and `log` defined as well) that executes before each step (act). You may have a look at [`ManagableFlows`](/src/main/scala/api/routing/dsl/ManagableRouting.scala) trait if you need automatical timеouts for flows - it will work only for `Future`-based implementation not for "simple" ones (`Act.simple` and so on). See [RoutingDSL](/src/main/scala/api/routing/dsl/RoutingDSL.scala) for sources.
   - [metrics](/src/test/scala/api/routing/metrics/MetricsTest.scala#L61) - shows how to measure time, spent on each service. Note that time spent for a step itself is measured automatically. All such measurements are tagged with "flowName" tag and each contains a name of current step and service that was executed inside that step, so you need implicitly pass `MetricsContext` to ensure that service is bound to a step. You can get this context from message iteslf (see `withMeta` in routing examples).
 
 #### Flow

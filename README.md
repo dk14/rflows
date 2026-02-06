@@ -5,7 +5,7 @@
 # rflows
 
 This is embedded reactive and typesafe Scala-based DSL for declaring flows using functional composition.
-Open-sourced with Agoda.com permission.
+Open-sourced with Agoda.com (Booking Holdings company) permission.
 
 ![Graph1](/graph.png)
 

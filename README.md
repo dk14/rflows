@@ -162,15 +162,3 @@ Usually the context is current request, so just `Flow(incomingMessage, incomingM
 ##### Meta
 
 Meta - is meta-information which contains current executing flow itself (including name), so you can propagate it to handler, services etc. Used for metrics and logging to define a concrete flow (act, splitter or aggregator) where some measured/logged event is actually takes place.
-
-#### See also
-
-TODO: Big Flow Decomposition
-
-TODO: "how to write handler" examples
-
-TODO: how to register before, after, failure handlers
-
-#### PS
-
-Inspired by Camel, Akka projects. Thanks to [Alexander Nemish](http://github.com/nau), [Ilya Tkachuk](https://github.com/jctim), Vitalij Kotlyarenko for some of ideas.
